@@ -12,18 +12,15 @@ namespace astar_training.Astar
         public float _g;
         public float _h;
         public float _f;
+        public NodeState _state;
+        public Node _parentNode;
 
-        public Node(Point pos, float g, float h, float f)
+        public enum NodeState { Untested, Open, Closed }
+
+        public Node(Point pos)
         {
             _pos = pos;
-            _g = g;
-            _h = h;
-            _f = f;
-        }
-
-        public void setPos(Point pos)
-        {
-            _pos = pos;
+            _state = NodeState.Untested;
         }
 
         public void setG(float g)
@@ -39,6 +36,16 @@ namespace astar_training.Astar
         public void setF(float f)
         {
             _f = f;
+        }
+
+        public void setNodeState(NodeState state)
+        {
+            _state = state;
+        }
+
+        public void setParentNode(Node parentNode)
+        {
+            _parentNode = parentNode;
         }
     }
 }

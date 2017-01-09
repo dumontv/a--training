@@ -11,8 +11,13 @@ namespace astar_training
     {
         static void Main(string[] args)
         {
-            Map map = new Map(-1);
+            Map map = new Map(1);
+            Pathfinder pathfinder = new Pathfinder(map);
+
+            Console.WriteLine("Map without path");
             map.Draw();
+            Console.WriteLine("\nMap with path");
+            pathfinder.Draw();
             Console.ReadKey();
         }
     }

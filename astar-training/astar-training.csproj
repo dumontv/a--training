@@ -43,8 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Astar\Bot.cs" />
     <Compile Include="Astar\Map.cs" />
+    <Compile Include="Astar\Node.cs" />
+    <Compile Include="Astar\Pathfinder.cs" />
+    <Compile Include="Astar\Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

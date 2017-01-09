@@ -16,5 +16,15 @@ namespace astar_training.Astar
             _x = x;
             _y = y;
         }
+
+        public static bool operator== (Point a, Point b)
+        {
+            return (a._x == b._x && a._y == b._y);
+        }
+
+        public static bool operator!= (Point a, Point b)
+        {
+            return !(a == b);
+        }
     }
 }

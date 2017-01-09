@@ -8,7 +8,7 @@ namespace astar_training.Astar
 {
     public class Map
     {
-        public enum Tile { Ground, Wall, Entry, Exit };
+        public enum Tile { Ground, Wall, Entry, Exit, Path };
         private Tile[,] _map;
 
         public Map(int preset = 1)
@@ -81,6 +81,9 @@ namespace astar_training.Astar
                             break;
                         case Tile.Exit:
                             Console.Write("E");
+                            break;
+                        case Tile.Path:
+                            Console.Write("o");
                             break;
                     }
                     if (j == _map.GetLength(0) - 1)
