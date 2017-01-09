@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace astar_training.Astar
 {
-    class Map
+    public class Map
     {
         public enum Tile { Ground, Wall, Entry, Exit };
         private Tile[,] _map;
@@ -87,6 +87,11 @@ namespace astar_training.Astar
                         Console.Write("\n");
                 }
             }
+        }
+
+        public Tile[,] getMap()
+        {
+            return _map;
         }
     }
 }
