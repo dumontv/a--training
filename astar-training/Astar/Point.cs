@@ -8,21 +8,21 @@ namespace astar_training.Astar
 {
     public class Point
     {
-        public int _x;
-        public int _y;
+        public int X { get; }
+        public int Y { get; }
 
         public Point(int x, int y)
         {
-            _x = x;
-            _y = y;
+            X = x;
+            Y = y;
         }
 
-        public static bool operator== (Point a, Point b)
+        public static bool operator ==(Point a, Point b)
         {
-            return (a._x == b._x && a._y == b._y);
+            return (a.X == b.X && a.Y == b.Y);
         }
 
-        public static bool operator!= (Point a, Point b)
+        public static bool operator !=(Point a, Point b)
         {
             return !(a == b);
         }

@@ -6,31 +6,12 @@ using System.Threading.Tasks;
 
 namespace astar_training.Astar
 {
-    public class Map
-    {
-        public enum Tile { Ground, Wall, Entry, Exit, Path };
-        private Tile[,] _map;
-
-        public Map(int preset = 1)
-        {
-            switch (preset)
-            {
-                case 1: default:
-                    _map = loadMapPreset1();
-                    break;
-                case -1:
-                    _map = loadRandomMap();
-                    break;
-                case 2:
-                    _map = loadMapPreset2();
-                    break;
-            }
-        }
-
+    public static class MapUtils
+    {     
         // No walls, only ground
-        private Tile[,] loadMapPreset1()
+        public static Tile[,] GenerateMapPreset1()
         {
-            return new Tile[10,10] {
+            return new Tile[10, 10] {
                 { Tile.Entry,  Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
                 { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
                 { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
@@ -45,7 +26,7 @@ namespace astar_training.Astar
         }
 
         // Some walls
-        private Tile[,] loadMapPreset2()
+        public static Tile[,] GenerateMapPreset2()
         {
             return new Tile[10, 10] {
                 { Tile.Entry,  Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
@@ -61,34 +42,36 @@ namespace astar_training.Astar
             };
         }
 
-        private Tile[,] loadRandomMap()
+        public static Tile[,] GenerateRandomMap()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
-            Tile[,] randomMap =  new Tile[10, 10];
+            Tile[,] randomMap = new Tile[10, 10];
+            int[] mapLengths = new int[2] { randomMap.GetLength(0), randomMap.GetLength(1) };
 
             // Everything is random, either walls or ground
-            for (int i = 0; i < randomMap.GetLength(0); i++)
+            for (int i = 0; i < mapLengths[0]; i++)
             {
-                for (int j = 0; j < randomMap.GetLength(1); j++)
+                for (int j = 0; j < mapLengths[1]; j++)
                 {
-                    randomMap[i, j] = (Tile) rnd.Next(0, 2);
+                    randomMap[i, j] = (Tile)rnd.Next(0, 2);
                 }
             }
 
             // We set an entry at the start and an exit at the end
             randomMap[0, 0] = Tile.Entry;
-            randomMap[randomMap.GetLength(0) - 1, randomMap.GetLength(1) - 1] = Tile.Exit;
+            randomMap[mapLengths[0] - 1, mapLengths[1] - 1] = Tile.Exit;
 
             return randomMap;
         }
 
-        public void Draw()
+        public static void Draw(Tile[,] map)
         {
-            for (int i = 0; i < _map.GetLength(0); i++)
+            int[] mapLengths = new int[2] { map.GetLength(0), map.GetLength(1) };
+            for (int i = 0; i < mapLengths[0]; i++)
             {
-                for (int j = 0; j < _map.GetLength(1); j++)
+                for (int j = 0; j < mapLengths[1]; j++)
                 {
-                    switch (_map[i, j])
+                    switch (map[i, j])
                     {
                         case Tile.Ground:
                             Console.Write("x");
@@ -106,15 +89,10 @@ namespace astar_training.Astar
                             Console.Write("o");
                             break;
                     }
-                    if (j == _map.GetLength(0) - 1)
+                    if (j == mapLengths[0] - 1)
                         Console.Write("\n");
                 }
             }
-        }
-
-        public Tile[,] getMap()
-        {
-            return _map;
         }
     }
 }

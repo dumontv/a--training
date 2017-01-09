@@ -9,25 +9,28 @@ namespace astar_training.Astar
 {
     public class Pathfinder
     {
-        private Map _map;
+        private Tile[,] _map;
+        private int[] _mapLengths;
         private Node[,] _nodes;
-        private Point _entryPoint;
-        private Point _exitPoint;
+        private Node _entryNode;
+        private Node _exitNode;
 
-        public Pathfinder(Map map)
+        public Pathfinder(Tile[,] map)
         {
             _map = map;
-            _nodes = new Node[_map.getMap().GetLength(0), _map.getMap().GetLength(1)];
-            for (int i = 0; i < _map.getMap().GetLength(0); i++)
-            {
-                for (int j = 0; j < _map.getMap().GetLength(1); j++)
-                {
-                    _nodes[i,j] = new Node(new Point(i, j));
+            _mapLengths = new int[2] { _map.GetLength(0), _map.GetLength(1) };
 
-                    if (_map.getMap()[i, j] == Map.Tile.Entry)
-                        _entryPoint = new Point(i, j);
-                    else if (_map.getMap()[i, j] == Map.Tile.Exit)
-                        _exitPoint = new Point(i, j);
+            _nodes = new Node[_mapLengths[0], _mapLengths[1]];
+            for (int i = 0; i < _mapLengths[0]; i++)
+            {
+                for (int j = 0; j < _mapLengths[1]; j++)
+                {
+                    _nodes[i, j] = new Node(new Point(i, j));
+
+                    if (_map[i, j] == Tile.Entry)
+                        _entryNode = _nodes[i, j];
+                    else if (_map[i, j] == Tile.Exit)
+                        _exitNode = _nodes[i, j];
                 }
             }
         }
@@ -39,10 +42,10 @@ namespace astar_training.Astar
             {
                 foreach (Point point in points)
                 {
-                    if (_map.getMap()[point._x, point._y] != Map.Tile.Exit)
-                        _map.getMap()[point._x, point._y] = Map.Tile.Path;
+                    if (_map[point.X, point.Y] != Tile.Exit)
+                        _map[point.X, point.Y] = Tile.Path;
                 }
-                _map.Draw();
+                MapUtils.Draw(_map);
             }
             else
                 Console.WriteLine("There is no path");
@@ -51,13 +54,13 @@ namespace astar_training.Astar
         public List<Point> FindPath()
         {
             List<Point> path = new List<Point>();
-            if (Search(_nodes[_entryPoint._x, _entryPoint._y]))
+            if (Search(_nodes[_entryNode.Pos.X, _entryNode.Pos.Y]))
             {
-                Node node = _nodes[_exitPoint._x, _exitPoint._y];
-                while (node._parentNode != null)
+                Node node = _nodes[_exitNode.Pos.X, _exitNode.Pos.Y];
+                while (node.ParentNode != null)
                 {
-                    path.Add(node._pos);
-                    node = node._parentNode;
+                    path.Add(node.Pos);
+                    node = node.ParentNode;
                 }
                 path.Reverse();
             }
@@ -66,20 +69,20 @@ namespace astar_training.Astar
 
         private bool Search(Node currentNode)
         {
-            currentNode.setNodeState(Node.NodeState.Closed);
+            currentNode.State = NodeState.Closed;
             List<Node> nextNodes = GetAdjacentWalkableNodes(currentNode);
-            nextNodes.Sort((node1, node2) => node1._f.CompareTo(node2._f));
+            nextNodes.Sort((node1, node2) => node1.F.CompareTo(node2.F));
             foreach (var nextNode in nextNodes)
             {
-                if (nextNode._pos == _exitPoint)
+                if (nextNode == _exitNode)
                 {
                     return true;
-                }           
+                }
                 else
                 {
                     if (Search(nextNode))
                         return true;
-                }           
+                }
             }
             return false;
         }
@@ -87,45 +90,48 @@ namespace astar_training.Astar
         private List<Node> GetAdjacentWalkableNodes(Node fromNode)
         {
             List<Node> walkableNodes = new List<Node>();
-            List<Point> nextLocations = GetAdjacentLocations(fromNode._pos);
+            List<Point> nextLocations = GetAdjacentLocations(fromNode.Pos);
 
             foreach (var location in nextLocations)
             {
-                int x = location._x;
-                int y = location._y;
-                
+                int x = location.X;
+                int y = location.Y;
+
                 // Stay within the grid's boundaries
-                if (x < 0 || x >= _map.getMap().GetLength(0) || y < 0 || y >= _map.getMap().GetLength(1))
+                if (x < 0 || x >= _mapLengths[0] || y < 0 || y >= _mapLengths[1])
                     continue;
 
                 // Ignore non-walkable nodes
-                if (_map.getMap()[x, y] == Map.Tile.Wall)
+                if (_map[x, y] == Tile.Wall)
                     continue;
 
                 Node node = _nodes[x, y];
 
                 // Ignore already-closed nodes
-                if (node._state == Node.NodeState.Closed)
+                if (node.State == NodeState.Closed)
                     continue;
 
                 // Calculate G, H and F
+                // G = distance from starting node to target node
+                // H = distance from target node to exit node
+                // F = G+H
                 // Here, G is always 1, because there are no diagonals nor traps
-                node._g = 1;
-                float a = _exitPoint._x - (node._pos._x);
-                float b = _exitPoint._y - (node._pos._y);                
-                node._h = (float)Math.Sqrt(a * a + b * b);
-                node._f = node._g + node._h;
+                node.G = 1;
+                float a = _exitNode.Pos.X - (node.Pos.X);
+                float b = _exitNode.Pos.Y - (node.Pos.Y);
+                node.H = (float)Math.Sqrt(a * a + b * b);
+                node.F = node.G + node.H;
 
                 // Already-open nodes are only added to the list
-                if (node._state == Node.NodeState.Open)
+                if (node.State == NodeState.Open)
                 {
-                    node.setParentNode(fromNode);
+                    node.ParentNode = fromNode;
                     walkableNodes.Add(node);
                 }
                 else
                 {
-                    node.setParentNode(fromNode);
-                    node.setNodeState(Node.NodeState.Open);
+                    node.ParentNode = fromNode;
+                    node.State = NodeState.Open;
                     walkableNodes.Add(node);
                 }
             }
@@ -136,10 +142,10 @@ namespace astar_training.Astar
         private List<Point> GetAdjacentLocations(Point nodePos)
         {
             List<Point> locations = new List<Point>();
-            locations.Add(new Point(nodePos._x - 1, nodePos._y));
-            locations.Add(new Point(nodePos._x + 1, nodePos._y));
-            locations.Add(new Point(nodePos._x, nodePos._y - 1));
-            locations.Add(new Point(nodePos._x, nodePos._y + 1));
+            locations.Add(new Point(nodePos.X - 1, nodePos.Y));
+            locations.Add(new Point(nodePos.X + 1, nodePos.Y));
+            locations.Add(new Point(nodePos.X, nodePos.Y - 1));
+            locations.Add(new Point(nodePos.X, nodePos.Y + 1));
 
             return locations;
         }
