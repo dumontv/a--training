@@ -1,1 +1,1 @@
-# a--training
+# astar-training
