@@ -21,6 +21,9 @@ namespace astar_training.Astar
                 case -1:
                     _map = loadRandomMap();
                     break;
+                case 2:
+                    _map = loadMapPreset2();
+                    break;
             }
         }
 
@@ -38,6 +41,23 @@ namespace astar_training.Astar
                 { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
                 { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
                 { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Exit   }
+            };
+        }
+
+        // Some walls
+        private Tile[,] loadMapPreset2()
+        {
+            return new Tile[10, 10] {
+                { Tile.Entry,  Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Wall,   Tile.Wall,   Tile.Wall,   Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Wall,   Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Wall,   Tile.Wall,   Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Wall,   Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Wall,   Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Wall,   Tile.Ground, Tile.Ground, Tile.Ground, Tile.Exit   }
             };
         }
 

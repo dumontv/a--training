@@ -34,12 +34,18 @@ namespace astar_training.Astar
 
         public void Draw()
         {
-            foreach (Point point in FindPath())
+            List<Point> points = FindPath();
+            if (points.Count > 0)
             {
-                if (_map.getMap()[point._x, point._y] != Map.Tile.Exit)
-                    _map.getMap()[point._x, point._y] = Map.Tile.Path;
+                foreach (Point point in points)
+                {
+                    if (_map.getMap()[point._x, point._y] != Map.Tile.Exit)
+                        _map.getMap()[point._x, point._y] = Map.Tile.Path;
+                }
+                _map.Draw();
             }
-            _map.Draw();
+            else
+                Console.WriteLine("There is no path");
         }
 
         public List<Point> FindPath()
@@ -103,7 +109,7 @@ namespace astar_training.Astar
                     continue;
 
                 // Calculate G, H and F
-                // Here, G is always 1, because there are no diagonal nor traps
+                // Here, G is always 1, because there are no diagonals nor traps
                 node._g = 1;
                 float a = _exitPoint._x - (node._pos._x);
                 float b = _exitPoint._y - (node._pos._y);                
