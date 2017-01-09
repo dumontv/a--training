@@ -9,19 +9,23 @@ namespace astar_training.Astar
     class Map
     {
         public enum Tile { Ground, Wall, Entry, Exit };
-        private Tile[,] map;
+        private Tile[,] _map;
 
         public Map(int preset = 1)
         {
             switch (preset)
             {
                 case 1: default:
-                    map = createMapPreset1();
+                    _map = loadMapPreset1();
+                    break;
+                case -1:
+                    _map = loadRandomMap();
                     break;
             }
         }
 
-        private Tile[,] createMapPreset1()
+        // No walls, only ground
+        private Tile[,] loadMapPreset1()
         {
             return new Tile[10,10] {
                 { Tile.Entry,  Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
@@ -37,13 +41,33 @@ namespace astar_training.Astar
             };
         }
 
+        private Tile[,] loadRandomMap()
+        {
+            Random rnd = new Random(DateTime.Now.Millisecond);
+            Tile[,] randomMap =  new Tile[10, 10];
+
+            // We set an entry at the start and an exit at the end
+            randomMap[0, 0] = Tile.Entry;
+            randomMap[randomMap.GetLength(0) - 1, randomMap.GetLength(1) - 1] = Tile.Exit;
+
+            // The rest is random
+            for (int i = 1; i < randomMap.GetLength(0); i++)
+            {
+                for (int j = 0; j < randomMap.GetLength(1) - 1; j++)
+                {
+                    randomMap[i, j] = (Tile) rnd.Next(0, 2);
+                }
+            }
+            return randomMap;
+        }
+
         public void Draw()
         {
-            for (int i = 0; i < map.GetLength(0); i++)
+            for (int i = 0; i < _map.GetLength(0); i++)
             {
-                for (int j = 0; j < map.GetLength(1); j++)
+                for (int j = 0; j < _map.GetLength(1); j++)
                 {
-                    switch (map[i, j])
+                    switch (_map[i, j])
                     {
                         case Tile.Ground:
                             Console.Write("x");
@@ -58,7 +82,7 @@ namespace astar_training.Astar
                             Console.Write("E");
                             break;
                     }
-                    if (j == map.GetLength(0) - 1)
+                    if (j == _map.GetLength(0) - 1)
                         Console.Write("\n");
                 }
             }
