@@ -37,7 +37,7 @@ namespace astar_training.Astar
                 { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
                 { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
                 { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground },
-                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Exit }
+                { Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Ground, Tile.Exit   }
             };
         }
 
@@ -46,18 +46,19 @@ namespace astar_training.Astar
             Random rnd = new Random(DateTime.Now.Millisecond);
             Tile[,] randomMap =  new Tile[10, 10];
 
-            // We set an entry at the start and an exit at the end
-            randomMap[0, 0] = Tile.Entry;
-            randomMap[randomMap.GetLength(0) - 1, randomMap.GetLength(1) - 1] = Tile.Exit;
-
-            // The rest is random
-            for (int i = 1; i < randomMap.GetLength(0); i++)
+            // Everything is random, either walls or ground
+            for (int i = 0; i < randomMap.GetLength(0); i++)
             {
-                for (int j = 0; j < randomMap.GetLength(1) - 1; j++)
+                for (int j = 0; j < randomMap.GetLength(1); j++)
                 {
                     randomMap[i, j] = (Tile) rnd.Next(0, 2);
                 }
             }
+
+            // We set an entry at the start and an exit at the end
+            randomMap[0, 0] = Tile.Entry;
+            randomMap[randomMap.GetLength(0) - 1, randomMap.GetLength(1) - 1] = Tile.Exit;
+
             return randomMap;
         }
 
