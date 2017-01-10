@@ -62,32 +62,32 @@ namespace astar_training.Astar
 
         public static void Draw(Tile[,] map)
         {
-            int[] mapLengths = new int[2] { map.GetLength(0), map.GetLength(1) };
-            for (int i = 0; i < mapLengths[0]; i++)
+            int firstMapLength = map.GetLength(0);
+
+            for (int i = 0; i < firstMapLength; i++)
             {
-                for (int j = 0; j < mapLengths[1]; j++)
+                for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    switch (map[i, j])
-                    {
-                        case Tile.Ground:
-                            Console.Write("x");
-                            break;
-                        case Tile.Wall:
-                            Console.Write("#");
-                            break;
-                        case Tile.Entry:
-                            Console.Write("B");
-                            break;
-                        case Tile.Exit:
-                            Console.Write("E");
-                            break;
-                        case Tile.Path:
-                            Console.Write("o");
-                            break;
-                    }
-                    if (j == mapLengths[0] - 1)
-                        Console.Write("\n");
+                    Console.Write(GetTileChar(map[i,j]));
+
+                    if (j == firstMapLength - 1)
+                        Console.Write(Environment.NewLine);
                 }
+            }
+        }
+
+        public static char GetTileChar(Tile tile)
+        {
+            switch (tile)
+            {
+                case Tile.Ground: return 'x';
+                case Tile.Wall: return '#';
+                case Tile.Entry: return 'B';
+                case Tile.Exit: return 'E';
+                case Tile.Path: return 'o';
+
+                default:
+                    throw new ArgumentException(string.Format("Tile {0} not supported", tile));
             }
         }
     }
