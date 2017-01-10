@@ -17,6 +17,7 @@ namespace astar_training.Astar
             _mapLengths = new int[2] { _map.GetLength(0), _map.GetLength(1) };
 
             _nodes = new Node[_mapLengths[0], _mapLengths[1]];
+
             for (int i = 0; i < _mapLengths[0]; i++)
             {
                 for (int j = 0; j < _mapLengths[1]; j++)
@@ -33,10 +34,10 @@ namespace astar_training.Astar
 
         public void Draw()
         {
-            List<Point> points = FindPath();
-            if (points.Count > 0)
+            LinkedList<Point> path = FindPath();
+            if (path != null)
             {
-                foreach (Point point in points)
+                foreach (Point point in path)
                 {
                     if (_map[point.X, point.Y] != Tile.Exit)
                         _map[point.X, point.Y] = Tile.Path;
@@ -47,18 +48,18 @@ namespace astar_training.Astar
                 Console.WriteLine("There is no path");
         }
 
-        public List<Point> FindPath()
+        public LinkedList<Point> FindPath()
         {
-            List<Point> path = new List<Point>();
+            LinkedList<Point> path = null;
             if (Search(_nodes[_entryNode.Pos.X, _entryNode.Pos.Y]))
             {
+                path = new LinkedList<Point>();
                 Node node = _nodes[_exitNode.Pos.X, _exitNode.Pos.Y];
                 while (node.ParentNode != null)
                 {
-                    path.Add(node.Pos);
+                    path.AddFirst(node.Pos);
                     node = node.ParentNode;
                 }
-                path.Reverse();
             }
             return path;
         }
@@ -68,7 +69,7 @@ namespace astar_training.Astar
             currentNode.State = NodeState.Closed;
             List<Node> nextNodes = GetAdjacentWalkableNodes(currentNode);
             nextNodes.Sort((node1, node2) => node1.F.CompareTo(node2.F));
-            foreach (var nextNode in nextNodes)
+            foreach (Node nextNode in nextNodes)
             {
                 if (nextNode == _exitNode)
                 {
@@ -88,7 +89,7 @@ namespace astar_training.Astar
             List<Node> walkableNodes = new List<Node>();
             List<Point> nextLocations = GetAdjacentLocations(fromNode.Pos);
 
-            foreach (var location in nextLocations)
+            foreach (Point location in nextLocations)
             {
                 int x = location.X;
                 int y = location.Y;
@@ -135,15 +136,15 @@ namespace astar_training.Astar
             return walkableNodes;
         }
 
-        private List<Point> GetAdjacentLocations(Point nodePos)
+        private static List<Point> GetAdjacentLocations(Point nodePos)
         {
-            List<Point> locations = new List<Point>();
-            locations.Add(new Point(nodePos.X - 1, nodePos.Y));
-            locations.Add(new Point(nodePos.X + 1, nodePos.Y));
-            locations.Add(new Point(nodePos.X, nodePos.Y - 1));
-            locations.Add(new Point(nodePos.X, nodePos.Y + 1));
-
-            return locations;
+            return new List<Point>(4)
+            {
+                new Point(nodePos.X - 1, nodePos.Y),
+                new Point(nodePos.X + 1, nodePos.Y),
+                new Point(nodePos.X, nodePos.Y - 1),
+                new Point(nodePos.X, nodePos.Y + 1)
+            };
         }
     }
 }
