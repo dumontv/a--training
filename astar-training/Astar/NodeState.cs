@@ -1,4 +1,7 @@
 ﻿namespace astar_training.Astar
 {
-    public enum NodeState { Untested, Open, Closed }
+    public enum NodeState
+    {
+        Untested, Open, Closed
+    }
 }
